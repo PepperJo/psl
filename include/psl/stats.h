@@ -15,7 +15,8 @@ double mean(InputIterator first, InputIterator last) {
     size_t count = 0;
     Sum sum = 0;
     /* we could use std::accumulate here but if the iterator
-     * is not a RandomAccessIterator we would need to compute the size again */
+     * is not a RandomAccessIterator we would need to compute the size again
+     * (can be a O(n) operation, e.g. for lists) */
     std::for_each(first, last, [&](decltype(*first) & e) {
         count++;
         sum = sum + e;
