@@ -9,13 +9,14 @@ namespace psl {
 namespace stats {
 
 template <class InputIterator,
-          class Sum = decltype(*InputIterator() + *InputIterator())>
+          class Sum = decltype(*std::declval<InputIterator>() +
+                               *std::declval<InputIterator>())>
 double mean(InputIterator first, InputIterator last) {
     size_t count = 0;
     Sum sum = 0;
     /* we could use std::accumulate here but if the iterator
      * is not a RandomAccessIterator we would need to compute the size again */
-    std::for_each(first, last, [&](decltype(*first)& e) {
+    std::for_each(first, last, [&](decltype(*first) & e) {
         count++;
         sum = sum + e;
     });
@@ -24,12 +25,13 @@ double mean(InputIterator first, InputIterator last) {
 }
 
 template <class InputIterator,
-          class Sum = decltype(*InputIterator() + *InputIterator())>
+          class Sum = decltype(*std::declval<InputIterator>() +
+                               *std::declval<InputIterator>())>
 double variance_m(InputIterator first, InputIterator last, double mu) {
     size_t count = 0;
     Sum sum = 0;
 
-    std::for_each(first, last, [&](decltype(*first)& e) {
+    std::for_each(first, last, [&](decltype(*first) & e) {
         count++;
         sum = sum + (e - mu) * (e - mu);
     });
@@ -37,20 +39,23 @@ double variance_m(InputIterator first, InputIterator last, double mu) {
 }
 
 template <class InputIterator,
-          class Sum = decltype(*InputIterator() + *InputIterator())>
+          class Sum = decltype(*std::declval<InputIterator>() +
+                               *std::declval<InputIterator>())>
 double variance(InputIterator first, InputIterator last) {
     return variance_m<InputIterator, Sum>(
         first, last, mean<InputIterator, Sum>(first, last));
 }
 
 template <class InputIterator,
-          class Sum = decltype(*InputIterator() + *InputIterator())>
+          class Sum = decltype(*std::declval<InputIterator>() +
+                               *std::declval<InputIterator>())>
 double stddev_m(InputIterator first, InputIterator last, double mu) {
     return std::sqrt(variance_m<InputIterator, Sum>(first, last, mu));
 }
 
 template <class InputIterator,
-          class Sum = decltype(*InputIterator() + *InputIterator())>
+          class Sum = decltype(*std::declval<InputIterator>() +
+                               *std::declval<InputIterator>())>
 double stddev(InputIterator first, InputIterator last, double mu) {
     return stddev<InputIterator, Sum>(first, last,
                                       mean<InputIterator, Sum>(first, last));
