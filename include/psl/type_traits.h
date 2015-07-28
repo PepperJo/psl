@@ -20,6 +20,9 @@ struct aligned_type {
 
     T& operator*() { return t; }
 };
+
+template <typename T>
+using plus_result_type = decltype(std::declval<T>() + std::declval<T>());
 }
 
 #endif /* TYPE_TRAITS_H */
