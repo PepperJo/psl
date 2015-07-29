@@ -11,7 +11,7 @@ namespace psl {
 namespace stats {
 
 template <class InputIterator,
-          class Sum = plus_result_type<InputIterator::value_type>>
+          class Sum = plus_result_type<typename InputIterator::value_type>>
 double mean(InputIterator first, InputIterator last) {
     size_t count = 0;
     Sum sum = 0;
@@ -27,7 +27,7 @@ double mean(InputIterator first, InputIterator last) {
 }
 
 template <class InputIterator,
-          class Sum = plus_result_type<InputIterator::value_type>>
+          class Sum = plus_result_type<typename InputIterator::value_type>>
 double variance_m(InputIterator first, InputIterator last, double mu) {
     size_t count = 0;
     Sum sum = 0;
@@ -40,20 +40,20 @@ double variance_m(InputIterator first, InputIterator last, double mu) {
 }
 
 template <class InputIterator,
-          class Sum = plus_result_type<InputIterator::value_type>>
+          class Sum = plus_result_type<typename InputIterator::value_type>>
 double variance(InputIterator first, InputIterator last) {
     return variance_m<InputIterator, Sum>(
         first, last, mean<InputIterator, Sum>(first, last));
 }
 
 template <class InputIterator,
-          class Sum = plus_result_type<InputIterator::value_type>>
+          class Sum = plus_result_type<typename InputIterator::value_type>>
 double stddev_m(InputIterator first, InputIterator last, double mu) {
     return std::sqrt(variance_m<InputIterator, Sum>(first, last, mu));
 }
 
 template <class InputIterator,
-          class Sum = plus_result_type<InputIterator::value_type>>
+          class Sum = plus_result_type<typename InputIterator::value_type>>
 double stddev(InputIterator first, InputIterator last, double mu) {
     return stddev<InputIterator, Sum>(first, last,
                                       mean<InputIterator, Sum>(first, last));
