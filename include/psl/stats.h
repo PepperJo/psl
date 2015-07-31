@@ -18,7 +18,7 @@ double mean(InputIterator first, InputIterator last) {
     /* we could use std::accumulate here but if the iterator
      * is not a RandomAccessIterator we would need to compute the size again
      * (can be a O(n) operation, e.g. for lists) */
-    std::for_each(first, last, [&](decltype(*first) & e) {
+    std::for_each(first, last, [&](decltype(*first)& e) {
         count++;
         sum = sum + e;
     });
@@ -32,7 +32,7 @@ double variance_m(InputIterator first, InputIterator last, double mu) {
     size_t count = 0;
     Sum sum = 0;
 
-    std::for_each(first, last, [&](decltype(*first) & e) {
+    std::for_each(first, last, [&](decltype(*first)& e) {
         count++;
         sum = sum + (e - mu) * (e - mu);
     });
@@ -63,10 +63,16 @@ template <class InputIterator>
 double quantile(InputIterator first, InputIterator last, double f) {
     auto count = std::distance(first, last);
     double delta = (count - 1) * f;
-    size_t i = delta;
+    size_t i = /* floor */ delta;
     delta -= i;
     std::advance(first, i);
     return (1 - delta) * *first + delta * *std::next(first);
+}
+
+template <class InputIterator>
+double interquartile_range(InputIterator first, InputIterator last) {
+    return quantile<InputIterator>(first, last, 0.75) -
+           quantile<InputIterator>(first, last, 0.25);
 }
 
 template <class InputIterator>
