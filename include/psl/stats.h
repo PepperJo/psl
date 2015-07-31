@@ -28,7 +28,7 @@ double mean(InputIterator first, InputIterator last) {
 
 template <class InputIterator,
           class Sum = plus_result_type<typename InputIterator::value_type>>
-double variance_m(InputIterator first, InputIterator last, double mu) {
+double variance(InputIterator first, InputIterator last, double mu) {
     size_t count = 0;
     Sum sum = 0;
 
@@ -48,7 +48,7 @@ double variance(InputIterator first, InputIterator last) {
 
 template <class InputIterator,
           class Sum = plus_result_type<typename InputIterator::value_type>>
-double stddev_m(InputIterator first, InputIterator last, double mu) {
+double stddev(InputIterator first, InputIterator last, double mu) {
     return std::sqrt(variance_m<InputIterator, Sum>(first, last, mu));
 }
 
