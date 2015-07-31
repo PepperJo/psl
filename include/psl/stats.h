@@ -54,7 +54,7 @@ double stddev(InputIterator first, InputIterator last, double mu) {
 
 template <class InputIterator,
           class Sum = plus_result_type<typename InputIterator::value_type>>
-double stddev(InputIterator first, InputIterator last, double mu) {
+double stddev(InputIterator first, InputIterator last) {
     return stddev<InputIterator, Sum>(first, last,
                                       mean<InputIterator, Sum>(first, last));
 }
