@@ -2,21 +2,63 @@
 #define LOCALE_H
 
 #include <cstdint>
-#include <locale>
+#include <type_traits>
+#include <cstddef>
 
 namespace psl {
 
+enum class ctype_mask : uint16_t {
+    UPPER,
+    LOWER,
+    ALPHA,
+    DIGIT,
+    XDIGIT,
+    SPACE,
+    BLANK,
+    PRINT,
+    CNTRL,
+    PUNCT,
+};
+
+constexpr ctype_mask operator|(ctype_mask a, ctype_mask b) {
+    return static_cast<ctype_mask>(
+        static_cast<std::underlying_type<ctype_mask>::type>(a) |
+        static_cast<std::underlying_type<ctype_mask>::type>(b));
+}
+
+constexpr ctype_mask operator&(ctype_mask a, ctype_mask b) {
+    return static_cast<ctype_mask>(
+        static_cast<std::underlying_type<ctype_mask>::type>(a) &
+        static_cast<std::underlying_type<ctype_mask>::type>(b));
+}
+
+struct ctype_base {
+    using mask = ctype_mask;
+    static const mask upper = mask::UPPER;
+    static const mask lower = mask::LOWER;
+    static const mask alpha = mask::ALPHA;
+    static const mask digit = mask::DIGIT;
+    static const mask xdigit = mask::XDIGIT;
+    static const mask space = mask::SPACE;
+    static const mask blank = mask::BLANK;
+    static const mask print = mask::PRINT;
+    static const mask graph = mask::ALPHA | mask::DIGIT | mask::PUNCT;
+    static const mask cntrl = mask::CNTRL;
+    static const mask punct = mask::PUNCT;
+    static const mask alnum = mask::ALPHA | mask::DIGIT;
+};
+
 template <class charT>
-class basic_ctype : public std::ctype_base {};
+class basic_ctype : public psl::ctype_base {};
 
 using ctype = basic_ctype<char>;
 
 template <>
-class basic_ctype<char> : public std::ctype_base {
+class basic_ctype<char> : public psl::ctype_base {
    public:
     using char_type = char;
     constexpr bool is(mask m, char_type c) const {
-        return classify[static_cast<size_t>(c)] & m;
+        return static_cast<bool>(classify[static_cast<size_t>(c)] & m);
     }
 
    private:
@@ -31,7 +73,7 @@ class basic_ctype<char> : public std::ctype_base {
         /* 0x07 = */ ctype::cntrl,
         /* 0x08 = */ ctype::cntrl,
 
-        /* 0x09 = */ ctype::cntrl | ctype::space,
+        /* 0x09 = */ ctype::cntrl | ctype::blank | ctype::space,
 
         /* 0x0A = */ ctype::cntrl | ctype::space,
         /* 0x0B = */ ctype::cntrl | ctype::space,
@@ -57,7 +99,7 @@ class basic_ctype<char> : public std::ctype_base {
         /* 0x1E = */ ctype::cntrl,
         /* 0x1F = */ ctype::cntrl,
 
-        /* 0x20 = */ ctype::space | ctype::print,
+        /* 0x20 = */ ctype::space | ctype::blank | ctype::print,
 
         /* 0x21 = */ ctype::punct | ctype::print,
         /* 0x22 = */ ctype::punct | ctype::print,
