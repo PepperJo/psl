@@ -28,12 +28,12 @@ constexpr double mean(InputIterator first, InputIterator last) {
     return sum / static_cast<double>(count);
 }
 
-constexpr size_t BesselCorrection(const size_t count) {
+constexpr size_t BesselCorrection(size_t count) {
     /* corrected/unbiased */
     return count - 1;
 }
 
-constexpr size_t ShrinkageEstimator(const size_t count) {
+constexpr size_t ShrinkageEstimator(size_t count) {
     /* Minimize mean squared error (biased) */
     return count + 1;
 }
