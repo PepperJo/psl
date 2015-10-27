@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <ostream>
 
+#include <psl/type_traits.h>
+
 namespace psl {
 namespace terminal {
 
@@ -13,6 +15,11 @@ enum class graphic_format : uint8_t {
     BOLD = 1,
     FAINT = 2,
     RED = 31,
+    GREEN = 32,
+    YELLOW = 33,
+    BLUE = 34,
+    MAGENTA = 35,
+    CYAN = 36,
     WHITE = 37,
 };
 
@@ -20,11 +27,6 @@ enum class graphic_format : uint8_t {
 constexpr auto CSI = "\033[";
 /* select graphic rendering mode */
 constexpr auto SGR = "m";
-
-template <typename E>
-constexpr auto to_underlying(E e) -> typename std::underlying_type<E>::type {
-    return static_cast<typename std::underlying_type<E>::type>(e);
-}
 
 inline std::ostream& operator<<(std::ostream& out, const graphic_format f) {
     out << CSI << std::to_string(to_underlying(f)) << "m";

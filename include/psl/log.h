@@ -10,24 +10,24 @@ namespace psl {
 
 template <typename format>
 inline std::ostream& log_err(std::ostream& out, const char* file, uint32_t line,
-                             int ev) {
-    std::system_error error(ev < 0 ? -ev : ev, std::system_category());
+                             int ev, const std::error_category& cat) {
+    std::system_error error(ev < 0 ? -ev : ev, cat);
     out << format::BOLD << file << ':' << line << ": " << format::RED
         << "error: " << format::WHITE << error.code().message() << format::RESET
         << " (" << error.code() << ")" << format::RESET;
     return out;
 }
 
-#define TERM_LOG_ERR(ev)                                                       \
+#define TERM_LOG_ERR(ev, cat)                                                  \
     psl::log_err<psl::terminal::graphic_format>(std::cerr, __FILE__, __LINE__, \
-                                                ev)
-#define CHECK_ERR(condition, ev)                                               \
+                                                ev, cat)
+#define CHECK_ERR(condition, ev, cat)                                          \
     if (condition)                                                             \
-    TERM_LOG_ERR(ev) << "\n\t" << #condition << '\n'
+    TERM_LOG_ERR(ev, cat) << "\n\t" << #condition << '\n'
 
-#define LOG_ERR_EXIT(condition, ev)                                            \
+#define LOG_ERR_EXIT(condition, ev, cat)                                       \
     do {                                                                       \
-        CHECK_ERR(condition, ev), std::exit(ev < 0 ? ev : -ev);                \
+        CHECK_ERR(condition, ev, cat), std::exit(ev < 0 ? ev : -ev);           \
     } while (0)
 }
 
